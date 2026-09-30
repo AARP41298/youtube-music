@@ -29,6 +29,7 @@ interface AnimatedWord {
 }
 
 const GENERIC_WORD_DELAY = 0.05;
+const COUNTDOWN_DOTS = 3;
 
 const wordTimingStyle = (delay: number, status: SyncedLineProps['status']) => {
   const value = status === 'current' ? `${delay}s` : '0s';
@@ -166,6 +167,15 @@ export const SyncedLine = (props: SyncedLineProps) => {
     }));
   });
 
+  const countdownDots = createMemo(() => {
+    if (props.status !== 'upcoming') return '';
+
+    const remaining = (props.line.timeInMs - currentTime()) / 1000;
+    if (remaining <= 0) return '';
+
+    return '.'.repeat(Math.min(COUNTDOWN_DOTS, Math.ceil(remaining)));
+  });
+
   return (
     <Show fallback={<EmptyLine {...props} />} when={text()}>
       <div
@@ -203,6 +213,15 @@ export const SyncedLine = (props: SyncedLineProps) => {
             }}
           >
             <span class="original">
+              <Show when={countdownDots()}>
+                <span class="countdown-dots">
+                  <yt-formatted-string
+                    text={{
+                      runs: [{ text: countdownDots() }],
+                    }}
+                  />
+                </span>
+              </Show>
               <For each={words()}>
                 {(word) => {
                   return (
