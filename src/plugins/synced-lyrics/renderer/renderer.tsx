@@ -161,27 +161,37 @@ export const LyricsRenderer = () => {
 
   const tab = document.querySelector<HTMLElement>(selectors.body.tabRenderer)!;
 
-  let mouseCoord = 0;
+  // null while the mouse is outside the lyrics tab, so a stale or default
+  // position can't keep the picker visible while the lyrics scroll
+  let mouseCoord: number | null = null;
   const mousemoveListener = (e: Event) => {
-    if ('clientY' in e) {
+    if (e.type === 'mouseleave') {
+      mouseCoord = null;
+    } else if ('clientY' in e) {
       mouseCoord = (e as MouseEvent).clientY;
     }
 
+    const sticky = stickyRef();
+    if (!sticky) return;
+
     const { top } = tab.getBoundingClientRect();
-    const { clientHeight: height } = stickyRef()!;
+    const { clientHeight: height } = sticky;
     const scrollOffset = scroller()?.scrollOffset ?? -1;
 
     const isInView = scrollOffset <= height;
-    const isMouseOver = mouseCoord - top - 5 <= height;
+    const isMouseOver =
+      mouseCoord !== null &&
+      mouseCoord >= top &&
+      mouseCoord - top - 5 <= height;
 
     const showPicker = isInView || isMouseOver;
 
     if (showPicker) {
       // picker visible
-      stickyRef()!.style.setProperty('--lyrics-picker-top', '0');
+      sticky.style.setProperty('--lyrics-picker-top', '0');
     } else {
       // picker hidden
-      stickyRef()!.style.setProperty('--lyrics-picker-top', `-${height}px`);
+      sticky.style.setProperty('--lyrics-picker-top', `-${height}px`);
     }
   };
 
@@ -189,11 +199,13 @@ export const LyricsRenderer = () => {
     const vList = document.querySelector<HTMLElement>('.synced-lyrics-vlist');
 
     tab.addEventListener('mousemove', mousemoveListener);
+    tab.addEventListener('mouseleave', mousemoveListener);
     vList?.addEventListener('scroll', mousemoveListener);
     vList?.addEventListener('scrollend', mousemoveListener);
 
     onCleanup(() => {
       tab.removeEventListener('mousemove', mousemoveListener);
+      tab.removeEventListener('mouseleave', mousemoveListener);
       vList?.removeEventListener('scroll', mousemoveListener);
       vList?.removeEventListener('scrollend', mousemoveListener);
     });
