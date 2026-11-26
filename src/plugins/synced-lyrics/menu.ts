@@ -165,6 +165,15 @@ export const menu = async (
       },
     },
     {
+      label: t('plugins.synced-lyrics.menu.big-lyrics.label'),
+      toolTip: t('plugins.synced-lyrics.menu.big-lyrics.tooltip'),
+      type: 'checkbox',
+      checked: config.bigLyrics ?? false,
+      click(item) {
+        ctx.setConfig({ bigLyrics: item.checked });
+      },
+    },
+    {
       label: t('plugins.synced-lyrics.menu.korean-romanizer.label'),
       toolTip: t('plugins.synced-lyrics.menu.korean-romanizer.tooltip'),
       type: 'submenu',
