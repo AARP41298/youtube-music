@@ -28,6 +28,7 @@ export default createPlugin<
     lineEffect: 'fancy',
     romanization: true,
     bigRomanization: true,
+    koreanRomanizer: 'es-hangul',
   },
 
   menu,

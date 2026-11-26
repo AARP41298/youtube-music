@@ -164,6 +164,24 @@ export const menu = async (
         });
       },
     },
+    {
+      label: t('plugins.synced-lyrics.menu.korean-romanizer.label'),
+      toolTip: t('plugins.synced-lyrics.menu.korean-romanizer.tooltip'),
+      type: 'submenu',
+      submenu: (['es-hangul', 'laotouzi'] as const).map((romanizer) => ({
+        label: t(
+          `plugins.synced-lyrics.menu.korean-romanizer.submenu.${romanizer}.label`,
+        ),
+        toolTip: t(
+          `plugins.synced-lyrics.menu.korean-romanizer.submenu.${romanizer}.tooltip`,
+        ),
+        type: 'radio',
+        checked: (config.koreanRomanizer ?? 'es-hangul') === romanizer,
+        click() {
+          ctx.setConfig({ koreanRomanizer: romanizer });
+        },
+      })),
+    },
 
     {
       label: t('plugins.synced-lyrics.menu.convert-chinese-character.label'),

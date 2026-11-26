@@ -888,6 +888,20 @@
           "label": "Big romanized lyrics",
           "tooltip": "Make romanized lyrics bigger, and kanji, hangul, etc. smaller"
         },
+        "korean-romanizer": {
+          "label": "Korean romanization",
+          "tooltip": "Choose how Korean lyrics are romanized",
+          "submenu": {
+            "es-hangul": {
+              "label": "Revised Romanization (es-hangul)",
+              "tooltip": "Official South Korean system, e.g. 한국말 → hangungmal"
+            },
+            "laotouzi": {
+              "label": "McCune-Reischauer, as sung (laotouzi)",
+              "tooltip": "Follows pronunciation and sound changes, e.g. 한국말 → han'gungmal, 맛있다 → masitta"
+            }
+          }
+        },
         "show-lyrics-even-if-inexact": {
           "label": "Show lyrics even if inexact",
           "tooltip": "If the song is not found, the plugin tries again with a different search query.\nThe result from the second attempt may not be exact."

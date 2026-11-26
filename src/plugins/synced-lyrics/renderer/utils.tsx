@@ -7,12 +7,15 @@ import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
 import lazyVar from 'lazy-var';
 import { pinyin } from 'pinyin-pro';
+import { createMemo } from 'solid-js';
 import { render } from 'solid-js/web';
+
 import { waitForElement } from '@/utils/wait-for-element';
-import { detectLanguage } from '../language-detector';
 
 import { config, LyricsRenderer, setIsVisible } from './renderer';
-import { createMemo } from 'solid-js';
+
+import { detectLanguage } from '../language-detector';
+import { romanize as laotouziRomanize } from '../romanizers/laotouzi';
 
 export const selectors = {
   head: '#tabsContent > .tab-header:nth-of-type(2)',
@@ -193,8 +196,12 @@ const hanjaTranslate = (
   'translate' in hanjaModule ? hanjaModule : hanjaModule.default
 ).translate;
 
-export const romanizeHangul = (line: string) =>
-  esHangulRomanize(hanjaTranslate(line, 'SUBSTITUTION'));
+export const romanizeHangul = (line: string) => {
+  const hangul = hanjaTranslate(line, 'SUBSTITUTION');
+  return config()?.koreanRomanizer === 'laotouzi'
+    ? laotouziRomanize(hangul)
+    : esHangulRomanize(hangul);
+};
 
 export const romanizeChinese = (line: string) => {
   return line.replaceAll(/[\u4E00-\u9FFF]+/g, (match) => {

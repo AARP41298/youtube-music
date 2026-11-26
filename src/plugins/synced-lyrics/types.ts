@@ -11,11 +11,16 @@ export type SyncedLyricsPluginConfig = {
   lineEffect: LineEffect;
   romanization: boolean;
   bigRomanization: boolean;
+  koreanRomanizer?: KoreanRomanizer;
   convertChineseCharacter?:
     | 'simplifiedToTraditional'
     | 'traditionalToSimplified'
     | 'disabled';
 };
+
+// 'es-hangul': Revised Romanization (default)
+// 'laotouzi': McCune-Reischauer with sound changes, romanized as sung
+export type KoreanRomanizer = 'es-hangul' | 'laotouzi';
 
 export type LineLyricsStatus = 'previous' | 'current' | 'upcoming';
 
