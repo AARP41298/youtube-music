@@ -277,17 +277,22 @@ export const LyricsRenderer = () => {
 
   const [currentIndex, setCurrentIndex] = createSignal(0);
   createEffect(() => {
-    const index = statuses().findIndex((status) => status === 'current');
-    if (index === -1) return;
+    const all = statuses();
+    let index = all.findIndex((status) => status === 'current');
+    // Between lines: stay on the last one sung. Before the first line (a
+    // song's intro): the top. Never keep the previous song's index, or the
+    // new lyrics open scrolled to the middle.
+    if (index === -1) index = Math.max(all.lastIndexOf('previous'), 0);
     setCurrentIndex(index);
   });
 
   createEffect(() => {
     const current = currentLyrics();
     const idx = currentIndex();
-    const maxIdx = untrack(statuses).length - 1;
 
     if (!scroller() || !current.data?.lines) return;
+    // Index 0 is the lyrics picker, so lines are 1..length
+    const maxIdx = current.data.lines.length;
 
     // hacky way to make the "current" line scroll to the center of the screen
     const scrollIndex = Math.min(idx + 1, maxIdx);
